@@ -30,7 +30,6 @@ TARGET_SUPER_GROUP_SIZE=12108955648
 TARGET_HAS_SYSTEM_EXT=false
 TARGET_HAS_RIO="true"
 TARGET_HAS_ROOT="true"
-TARGET_HAS_SUS="false"
 # We disable handling of fs change since rio already has them
 #TODO: move its trigger to target's filesystems module
 TARGET_FS_CHANGED="false"
