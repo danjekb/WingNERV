@@ -2,14 +2,14 @@
   <img loading="lazy" src="readme-res/banner.png"/>
 </h1>
 <p align="center">
-  <a href="https://github.com/Yagzie/ProjectNERV-Lite/blob/fifteen/LICENSE"><img loading="lazy" src="https://img.shields.io/github/license/Yagzie/ProjectNERV-Lite?style=for-the-badge&logo=github"/></a>
-  <a href="https://github.com/Yagzie/ProjectNERV-Lite/commits/fifteen"><img loading="lazy" src="https://img.shields.io/github/last-commit/Yagzie/ProjectNERV-Lite/fifteen?style=for-the-badge"/></a>
-  <a href="https://github.com/Yagzie/ProjectNERV-Lite/stargazers"><img loading="lazy" src="https://img.shields.io/github/stars/Yagzie/ProjectNERV-Lite?style=for-the-badge"/></a>
-  <a href="https://github.com/Yagzie/ProjectNERV-Lite/graphs/contributors"><img loading="lazy" src="https://img.shields.io/github/contributors/Yagzie/ProjectNERV-Lite?style=for-the-badge"/></a>
-  <a href="https://github.com/Yagzie/ProjectNERV-Lite/actions/workflows/build.yml"><img loading="lazy" src="https://img.shields.io/github/actions/workflow/status/Yagzie/ProjectNERV-Lite/build.yml?style=for-the-badge"/></a>
+  <a href="https://github.com/vaultzie/NERV/blob/fun/LICENSE"><img loading="lazy" src="https://img.shields.io/github/license/vaultzie/NERV?style=for-the-badge&logo=github"/></a>
+  <a href="https://github.com/vaultzie/NERV/commits/fun"><img loading="lazy" src="https://img.shields.io/github/last-commit/vaultzie/NERV/fun?style=for-the-badge"/></a>
+  <a href="https://github.com/vaultzie/NERV/stargazers"><img loading="lazy" src="https://img.shields.io/github/stars/vaultzie/NERV?style=for-the-badge"/></a>
+  <a href="https://github.com/vaultzie/NERV/graphs/contributors"><img loading="lazy" src="https://img.shields.io/github/contributors/vaultzie/NERV?style=for-the-badge"/></a>
+  <a href="https://github.com/vaultzie/NERV/actions/workflows/build.yml"><img loading="lazy" src="https://img.shields.io/github/actions/workflow/status/vaultzie/NERV/build.yml?style=for-the-badge"/></a>
   <a href="https://crowdin.com/project/UN1CA"><img loading="lazy" src="https://img.shields.io/badge/Crowdin-263238?style=for-the-badge&logo=crowdin"/></a>
 </p>
-<p align="center">UN1CA <i>(/ˈu.ni.ka/)</i> is a work-in-progress custom firmware for Samsung Galaxy devices, and ProjectNERV is a fork of it aimed for personal usage.</p>
+<p align="center">UN1CA <i>(/ˈu.ni.ka/)</i> is a work-in-progress custom firmware for Samsung Galaxy devices, and WingNERV is a fork of it aimed for JDM devices.</p>
 
 # What is UN1CA?
 UN1CA is a work-in-progress custom firmware for Samsung Galaxy devices. It's based on the latest and greatest iteration of Samsung's UX and it also includes additional features and tweaks to ensure the best possible experience out of the box.
@@ -18,10 +18,17 @@ Its build system allows to automatically download/extract the firmware, apply th
 Any form of contribution, suggestions, bug report or feature request for the project will be welcome.
 
 # What is ProjectNERV?
-Since UN1CA is away for a while, I and some friends aiming for users to experience Samsung's newest One UI version with less features. This is a small project, and always will be like that.  
+Since UN1CA is away for a while, I and some friends aiming for users to experience Samsung's newest One UI version with less features. This is a small project, and always will be like that.
+
+# What is WingNERV?
+> **WingNERV = Wing**tech + Project**NERV**
+> 
+> Wingtech is the JDM responsible for designing and manufacturing the Galaxy M55(s)/F55/C55 5G.
+
+It's a fork of ProjectNERV (fun branch) with support for JDM devices thanks to being based on M55 firmware. I also plan to add MediaTek support by using XCover7 firmware as a base.
 
 # Features
-- Based on the latest stable Galaxy A73 firmware
+- Based on the latest Galaxy M55 One UI 7.0 firmware
 - Galaxy AI support
 - High end animations
 - AOD clock transition support
@@ -54,7 +61,8 @@ A big thanks goes to the following for their invaluable contributions in no part
 - **[ananjaser1211](https://github.com/ananjaser1211)** for troubleshooting and his time
 - **[iDrinkCoffee](https://github.com/iDrinkCoffee-TG)** and **[RisenID](https://github.com/RisenID)** for documentation revisioning
 - **[LineageOS Team](https://www.lineageos.org/)** for their original [OTA updater implementation](https://github.com/LineageOS/android_packages_apps_Updater)
+- **[Yagzie](https://github.com/yagzie)** and **[utkustnr](https://github.com/utkustnr)** for the original ProjectNERV
 - *All the UN1CA project contributors and testers ❤️*
 
 # Stargazers over time
-[![Stargazers over time](https://starchart.cc/Yagzie/ProjectNERV-Lite.svg)](https://starchart.cc/Yagzie/ProjectNERV-Lite)
+[![Stargazers over time](https://starchart.cc/vaultzie/NERV.svg)](https://starchart.cc/vaultzie/NERV)
