@@ -108,11 +108,11 @@ READ_BYTES_AT()
 DEPENDENCIES=(
     "awk" "basename" "bc" "brotli" "cat" "clang" "cmake"
     "cp" "curl" "cut" "cwebp" "dd" "dirname" "du" "ffmpeg"
-    "file" "getfattr" "git" "go" "grep" "head" "java" "ln"
-    "lz4" "make" "md5sum" "mkdir" "mount" "mv" "pcre2test"
-    "perl" "protoc" "python3" "rm" "sed" "sha1sum" "sort"
-    "stat" "tail" "tar" "touch" "tr" "truncate" "umount"
-    "unzip" "wc" "whoami" "xargs" "xxd" "zip" "zstd"
+    "file" "getfattr" "git" "grep" "head" "java" "ln" "lz4"
+    "make" "md5sum" "mkdir" "mount" "mv" "perl" "protoc"
+    "python3" "rm" "sed" "sha1sum" "sort" "stat" "tail"
+    "tar" "touch" "tr" "truncate" "umount" "unzip" "wc"
+    "whoami" "xargs" "xxd" "zip" "zstd"
 )
 MISSING=()
 for d in "${DEPENDENCIES[@]}"; do
