@@ -38,17 +38,17 @@ if [[ "$SOURCE_PRODUCT_FIRST_API_LEVEL" != "$TARGET_PRODUCT_FIRST_API_LEVEL" ]];
     LOG_STEP_OUT
 fi
 
-if $SOURCE_AUDIO_SUPPORT_ACH_RINGTONE; then
-    if ! $TARGET_AUDIO_SUPPORT_ACH_RINGTONE; then
-        echo "Applying ACH ringtone patches"
-        APPLY_PATCH "system" "system/framework/framework.jar" "$SRC_DIR/unica/patches/product_feature/audio/ach/framework.jar/0001-Disable-ACH-ringtone-support.patch"
-    fi
-else
-    if $TARGET_AUDIO_SUPPORT_ACH_RINGTONE; then
-        # TODO: won't be necessary anyway
-        true
-    fi
-fi
+#if $SOURCE_AUDIO_SUPPORT_ACH_RINGTONE; then
+#    if ! $TARGET_AUDIO_SUPPORT_ACH_RINGTONE; then
+#        echo "Applying ACH ringtone patches"
+#        APPLY_PATCH "system" "system/framework/framework.jar" "$SRC_DIR/unica/patches/product_feature/audio/ach/framework.jar/0001-Disable-ACH-ringtone-support.patch"
+#    fi
+#else
+#    if $TARGET_AUDIO_SUPPORT_ACH_RINGTONE; then
+#        # TODO: won't be necessary anyway
+#        true
+#    fi
+#fi
 
 #if $SOURCE_AUDIO_SUPPORT_DUAL_SPEAKER; then
 #    if ! $TARGET_AUDIO_SUPPORT_DUAL_SPEAKER; then
@@ -63,21 +63,21 @@ fi
 #    fi
 #fi
 
-if $SOURCE_AUDIO_SUPPORT_VIRTUAL_VIBRATION; then
-    if ! $TARGET_AUDIO_SUPPORT_VIRTUAL_VIBRATION; then
-    LOG_STEP_IN "- Applying virtual vibration patches"
-        APPLY_PATCH "system" "system/framework/framework.jar" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/framework.jar/0001-Disable-virtual-vibration-support.patch"
-        APPLY_PATCH "system" "system/framework/services.jar" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/services.jar/0001-Disable-virtual-vibration-support.patch"
-        APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/SecSettings.apk/0001-Disable-virtual-vibration-support.patch"
-        APPLY_PATCH "system" "system/priv-app/SettingsProvider/SettingsProvider.apk" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/SettingsProvider.apk/0001-Disable-virtual-vibration-support.patch"
-    LOG_STEP_OUT
-    fi
-else
-    if $TARGET_AUDIO_SUPPORT_VIRTUAL_VIBRATION; then
-        # TODO: won't be necessary anyway
-        true
-    fi
-fi
+#if $SOURCE_AUDIO_SUPPORT_VIRTUAL_VIBRATION; then
+#    if ! $TARGET_AUDIO_SUPPORT_VIRTUAL_VIBRATION; then
+#    LOG_STEP_IN "- Applying virtual vibration patches"
+#        APPLY_PATCH "system" "system/framework/framework.jar" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/framework.jar/0001-Disable-virtual-vibration-support.patch"
+#        APPLY_PATCH "system" "system/framework/services.jar" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/services.jar/0001-Disable-virtual-vibration-support.patch"
+#       APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/SecSettings.apk/0001-Disable-virtual-vibration-support.patch"
+#      APPLY_PATCH "system" "system/priv-app/SettingsProvider/SettingsProvider.apk" "$SRC_DIR/unica/patches/product_feature/audio/virtual_vib/SettingsProvider.apk/0001-Disable-virtual-vibration-support.patch"
+# LOG_STEP_OUT
+#fi
+#else
+#   if $TARGET_AUDIO_SUPPORT_VIRTUAL_VIBRATION; then
+#      # TODO: won't be necessary anyway
+#     true
+#fi
+#fi
 
 if [[ "$SOURCE_AUTO_BRIGHTNESS_TYPE" != "$TARGET_AUTO_BRIGHTNESS_TYPE" ]]; then
     LOG_STEP_IN "- Applying auto brightness type patches"
@@ -144,21 +144,21 @@ fi
 #    APPLY_PATCH "system" "system/framework/services.jar" "$SRC_DIR/unica/patches/product_feature/face/services.jar/0001-Fallback-to-Face-HIDL-2.0.patch"
 #fi
 
-if [[ "$SOURCE_MDNIE_SUPPORTED_MODES" != "$TARGET_MDNIE_SUPPORTED_MODES" ]] || \
-    [[ "$SOURCE_MDNIE_WEAKNESS_SOLUTION_FUNCTION" != "$TARGET_MDNIE_WEAKNESS_SOLUTION_FUNCTION" ]]; then
-    LOG_STEP_IN "- Applying mDNIe features patches"
-
-    DECODE_APK "system" "system/framework/services.jar"
-
-    FTP="
-    system/framework/services.jar/smali_classes2/com/samsung/android/hardware/display/SemMdnieManagerService.smali
-    "
-    for f in $FTP; do
-        sed -i "s/\"$SOURCE_MDNIE_SUPPORTED_MODES\"/\"$TARGET_MDNIE_SUPPORTED_MODES\"/g" "$APKTOOL_DIR/$f"
-        sed -i "s/\"$SOURCE_MDNIE_WEAKNESS_SOLUTION_FUNCTION\"/\"$TARGET_MDNIE_WEAKNESS_SOLUTION_FUNCTION\"/g" "$APKTOOL_DIR/$f"
-    done
-    LOG_STEP_OUT
-fi
+#if [[ "$SOURCE_MDNIE_SUPPORTED_MODES" != "$TARGET_MDNIE_SUPPORTED_MODES" ]] || \
+#    [[ "$SOURCE_MDNIE_WEAKNESS_SOLUTION_FUNCTION" != "$TARGET_MDNIE_WEAKNESS_SOLUTION_FUNCTION" ]]; then
+#    LOG_STEP_IN "- Applying mDNIe features patches"
+#
+#   DECODE_APK "system" "system/framework/services.jar"
+#
+#    FTP="
+#    system/framework/services.jar/smali_classes2/com/samsung/android/hardware/display/SemMdnieManagerService.smali
+#    "
+#    for f in $FTP; do
+#        sed -i "s/\"$SOURCE_MDNIE_SUPPORTED_MODES\"/\"$TARGET_MDNIE_SUPPORTED_MODES\"/g" "$APKTOOL_DIR/$f"
+#        sed -i "s/\"$SOURCE_MDNIE_WEAKNESS_SOLUTION_FUNCTION\"/\"$TARGET_MDNIE_WEAKNESS_SOLUTION_FUNCTION\"/g" "$APKTOOL_DIR/$f"
+#    done
+#    LOG_STEP_OUT
+#fi
 #if $SOURCE_HAS_HW_MDNIE; then
 #    if ! $TARGET_HAS_HW_MDNIE; then
 #        LOG_STEP_IN "- Applying HW mDNIe patches"
@@ -188,23 +188,23 @@ fi
 #    fi
 #fi
 
-if ! $SOURCE_HAS_QHD_DISPLAY; then
-    if $TARGET_HAS_QHD_DISPLAY; then
-        LOG_STEP_IN "- Applying multi resolution patches"
-        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/bin/bootanimation" 0 2000 755 "u:object_r:bootanim_exec:s0"
-        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/bin/surfaceflinger" 0 2000 755 "u:object_r:surfaceflinger_exec:s0"
-        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/lib/libgui.so" 0 0 644 "u:object_r:system_lib_file:s0"
-        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/lib64/libgui.so" 0 0 644 "u:object_r:system_lib_file:s0"
-        APPLY_PATCH "system" "system/framework/framework.jar" "$SRC_DIR/unica/patches/product_feature/resolution/framework.jar/0001-Enable-dynamic-resolution-control.patch"
-        APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" "$SRC_DIR/unica/patches/product_feature/resolution/SecSettings.apk/0001-Enable-dynamic-resolution-control.patch"
-        LOG_STEP_OUT
-    fi
-else
-    if ! $TARGET_HAS_QHD_DISPLAY; then
-        # TODO: won't be necessary anyway
-        true
-    fi
-fi
+#if ! $SOURCE_HAS_QHD_DISPLAY; then
+#    if $TARGET_HAS_QHD_DISPLAY; then
+#        LOG_STEP_IN "- Applying multi resolution patches"
+#        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/bin/bootanimation" 0 2000 755 "u:object_r:bootanim_exec:s0"
+#        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/bin/surfaceflinger" 0 2000 755 "u:object_r:surfaceflinger_exec:s0"
+#        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/lib/libgui.so" 0 0 644 "u:object_r:system_lib_file:s0"
+#        ADD_TO_WORK_DIR "dm3qxxx" "system" "system/lib64/libgui.so" 0 0 644 "u:object_r:system_lib_file:s0"
+#        APPLY_PATCH "system" "system/framework/framework.jar" "$SRC_DIR/unica/patches/product_feature/resolution/framework.jar/0001-Enable-dynamic-resolution-control.patch"
+#        APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" "$SRC_DIR/unica/patches/product_feature/resolution/SecSettings.apk/0001-Enable-dynamic-resolution-control.patch"
+#        LOG_STEP_OUT
+#    fi
+#else
+#    if ! $TARGET_HAS_QHD_DISPLAY; then
+#        # TODO: won't be necessary anyway
+#        true
+#    fi
+#fi
 
 if [[ "$SOURCE_HFR_MODE" != "$TARGET_HFR_MODE" ]]; then
     LOG_STEP_IN "- Applying HFR_MODE patches"
@@ -296,46 +296,46 @@ fi
 #    LOG_STEP_OUT
 #fi
 
-if [[ "$SOURCE_MULTI_MIC_MANAGER_VERSION" != "$TARGET_MULTI_MIC_MANAGER_VERSION" ]]; then
-    LOG_STEP_IN "- Applying SemMultiMicManager patches"
+#if [[ "$SOURCE_MULTI_MIC_MANAGER_VERSION" != "$TARGET_MULTI_MIC_MANAGER_VERSION" ]]; then
+#    LOG_STEP_IN "- Applying SemMultiMicManager patches"
+#
+#    DECODE_APK "system" "system/framework/framework.jar"
+#
+#    FTP="
+#    system/framework/framework.jar/smali_classes5/com/samsung/android/camera/mic/SemMultiMicManager.smali
+#    "
+#    for f in $FTP; do
+#        sed -i "s/$SOURCE_MULTI_MIC_MANAGER_VERSION/$TARGET_MULTI_MIC_MANAGER_VERSION/g" "$APKTOOL_DIR/$f"
+#    done
+#    LOG_STEP_OUT
+#fi
 
-    DECODE_APK "system" "system/framework/framework.jar"
-
-    FTP="
-    system/framework/framework.jar/smali_classes5/com/samsung/android/camera/mic/SemMultiMicManager.smali
-    "
-    for f in $FTP; do
-        sed -i "s/$SOURCE_MULTI_MIC_MANAGER_VERSION/$TARGET_MULTI_MIC_MANAGER_VERSION/g" "$APKTOOL_DIR/$f"
-    done
-    LOG_STEP_OUT
-fi
-
-if [[ "$SOURCE_SSRM_CONFIG_NAME" != "$TARGET_SSRM_CONFIG_NAME" ]]; then
-    LOG_STEP_IN "- Applying SSRM patches"
-
-    DECODE_APK "system" "system/framework/ssrm.jar"
-
-    FTP="
-    system/framework/ssrm.jar/smali/com/android/server/ssrm/Feature.smali
-    "
-    for f in $FTP; do
-        sed -i "s/$SOURCE_SSRM_CONFIG_NAME/$TARGET_SSRM_CONFIG_NAME/g" "$APKTOOL_DIR/$f"
-    done
-    LOG_STEP_OUT
-fi
-if [[ "$SOURCE_DVFS_CONFIG_NAME" != "$TARGET_DVFS_CONFIG_NAME" ]]; then
-    LOG_STEP_IN "- Applying DVFS patches"
-
-    DECODE_APK "system" "system/framework/ssrm.jar"
-
-    FTP="
-    system/framework/ssrm.jar/smali/com/android/server/ssrm/Feature.smali
-    "
-    for f in $FTP; do
-        sed -i "s/$SOURCE_DVFS_CONFIG_NAME/$TARGET_DVFS_CONFIG_NAME/g" "$APKTOOL_DIR/$f"
-    done
-    LOG_STEP_OUT
-fi
+#if [[ "$SOURCE_SSRM_CONFIG_NAME" != "$TARGET_SSRM_CONFIG_NAME" ]]; then
+#    LOG_STEP_IN "- Applying SSRM patches"
+#
+#    DECODE_APK "system" "system/framework/ssrm.jar"
+#
+#    FTP="
+#    system/framework/ssrm.jar/smali/com/android/server/ssrm/Feature.smali
+#    "
+#    for f in $FTP; do
+#        sed -i "s/$SOURCE_SSRM_CONFIG_NAME/$TARGET_SSRM_CONFIG_NAME/g" "$APKTOOL_DIR/$f"
+#    done
+#    LOG_STEP_OUT
+#fi
+#if [[ "$SOURCE_DVFS_CONFIG_NAME" != "$TARGET_DVFS_CONFIG_NAME" ]]; then
+#    LOG_STEP_IN "- Applying DVFS patches"
+#
+#    DECODE_APK "system" "system/framework/ssrm.jar"
+#
+#    FTP="
+#    system/framework/ssrm.jar/smali/com/android/server/ssrm/Feature.smali
+#    "
+#    for f in $FTP; do
+#        sed -i "s/$SOURCE_DVFS_CONFIG_NAME/$TARGET_DVFS_CONFIG_NAME/g" "$APKTOOL_DIR/$f"
+#    done
+#    LOG_STEP_OUT
+#fi
 
 if $SOURCE_IS_ESIM_SUPPORTED; then
     if ! $TARGET_IS_ESIM_SUPPORTED; then
