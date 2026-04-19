@@ -24,4 +24,4 @@ ROM_VERSION="${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
 ROM_VERSION+="-$(git rev-parse --short HEAD)"
 
 # I dont know what to name.
-ROM_CODENAME="Fun"
+ROM_CODENAME="Gore"

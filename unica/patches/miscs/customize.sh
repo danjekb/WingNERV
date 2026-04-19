@@ -28,4 +28,7 @@ if [[ "$SOURCE_SUPPORT_CUTOUT_PROTECTION" != "$TARGET_SUPPORT_CUTOUT_PROTECTION"
 fi
 
 # Set custom Display ID prop
-SET_PROP "system" "ro.build.display.id" "Project NERV Lite $(echo -n ${ROM_VERSION} | cut -d "-" -f1)-${ROM_CODENAME} - ${TARGET_CODENAME} [$(GET_PROP "system" "ro.build.display.id")]"
+SET_PROP "system" "ro.build.display.id" "WingNERV $(echo -n ${ROM_VERSION} | cut -d "-" -f1)-${ROM_CODENAME} - ${TARGET_CODENAME} [$(GET_PROP "system" "ro.build.display.id")]"
+
+# Spoof vendor security patch
+SET_PROP_IF_DIFF "vendor" "ro.vendor.build.security_patch" "$(GET_PROP "system" "ro.build.version.security_patch")"
