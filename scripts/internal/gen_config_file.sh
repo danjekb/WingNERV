@@ -88,17 +88,18 @@ fi
 #     Defaults to the current time of execution of the script.
 #
 #   [SOURCE/TARGET]_FIRMWARE
-#     String containing the source/target device firmware to use in the format of "Model number/CSC/IMEI".
-#     IMEI number is necessary to fetch the firmware from FUS, alternatively the device serial number can be used.
+#     String containing the source/target device firmware to use in the format of "Model number/CSC code/Firmware version".
+#     Firmware version can either be set to LATEST or a specific version in the format of "AP/CSC version/CP".
 #
 #   [SOURCE/TARGET]_EXTRA_FIRMWARES
 #     If defined, this set of extra devices firmwares will be downloaded/extracted when running `download_fw`/`extract_fw`
 #     along with the ones set in [SOURCE/TARGET]_FIRMWARE.
-#     This variable must be set as a string array in bash syntax, with each string element having the format of "Model number/CSC/IMEI".
+#     This variable must be set as a string array in bash syntax, with each string element having the format of "Model number/CSC/Firmware version".
 #     Please note that due to bash limitations the variable will be stored as a string with each item delimited using ":".
 #
 #     Example:
-#       - Setting the variable: `SOURCE_EXTRA_FIRMWARES=("SM-A528B/BTU/352599501234566" "SM-A528N/KOO/354049881234560")`
+#       - Setting the variable:
+#           `SOURCE_EXTRA_FIRMWARES=("SM-A528B/BTU/A528BXXSBGYI3/A528BOXMBGYI3/A528BXXSBGYI3" "SM-A528N/KOO/A528NKSS7GYI1/A528NOKR7GYI1/A528NKSS7GYI1")`
 #       - Converting back to array: `IFS=":" read -r -a SOURCE_EXTRA_FIRMWARES <<< "$SOURCE_EXTRA_FIRMWARES"`
 #
 #   TARGET_NAME
@@ -242,10 +243,10 @@ fi
 #     It can be checked in the following ways:
 #       - `A11Y_COLOR_BOOL_SUPPORT_MDNIE_HW` value in the `android.view.accessibility.A11yRune` class inside `framework.jar`
 #
-#   [SOURCE/TARGET]_HAS_MASS_CAMERA_APP
-#     Boolean which describes whether the device ships the mass Samsung Camera app variant.
+#   [SOURCE/TARGET]_HAS_JDM_CAMERA_APP
+#     Boolean which describes whether the device ships the JDM Samsung Camera app variant.
 #     It can be checked in the following ways:
-#       - `AndroidManifest.xml` of `SamsungCamera.apk` has `hal3_mass-phone-release` value
+#       - Samsung Camera app is named "SamSungCamera" instead of "SamsungCamera"
 #
 #   [SOURCE/TARGET]_HAS_QHD_DISPLAY
 #     Boolean which describes whether the device has a WQHD(+) display.
@@ -370,54 +371,20 @@ fi
     GET_BUILD_VAR "TARGET_SUPER_GROUP_SIZE"
     GET_BUILD_VAR "SOURCE_HAS_SYSTEM_EXT"
     GET_BUILD_VAR "TARGET_HAS_SYSTEM_EXT"
-    GET_BUILD_VAR "SOURCE_AUDIO_SUPPORT_ACH_RINGTONE"
-    GET_BUILD_VAR "TARGET_AUDIO_SUPPORT_ACH_RINGTONE"
-    GET_BUILD_VAR "SOURCE_AUDIO_SUPPORT_DUAL_SPEAKER"
-    GET_BUILD_VAR "TARGET_AUDIO_SUPPORT_DUAL_SPEAKER"
-    GET_BUILD_VAR "SOURCE_AUDIO_SUPPORT_VIRTUAL_VIBRATION"
-    GET_BUILD_VAR "TARGET_AUDIO_SUPPORT_VIRTUAL_VIBRATION"
     GET_BUILD_VAR "SOURCE_AUTO_BRIGHTNESS_TYPE"
     GET_BUILD_VAR "TARGET_AUTO_BRIGHTNESS_TYPE"
-    GET_BUILD_VAR "SOURCE_DVFS_CONFIG_NAME"
-    GET_BUILD_VAR "TARGET_DVFS_CONFIG_NAME"
-    GET_BUILD_VAR "SOURCE_ESE_CHIP_VENDOR" "none"
-    GET_BUILD_VAR "TARGET_ESE_CHIP_VENDOR" "none"
-    GET_BUILD_VAR "SOURCE_ESE_COS_NAME" "none"
-    GET_BUILD_VAR "TARGET_ESE_COS_NAME" "none"
     GET_BUILD_VAR "SOURCE_FP_SENSOR_CONFIG"
     GET_BUILD_VAR "TARGET_FP_SENSOR_CONFIG"
-    GET_BUILD_VAR "SOURCE_HAS_HW_MDNIE"
-    GET_BUILD_VAR "TARGET_HAS_HW_MDNIE"
-    GET_BUILD_VAR "SOURCE_HAS_MASS_CAMERA_APP"
-    GET_BUILD_VAR "TARGET_HAS_MASS_CAMERA_APP"
-    GET_BUILD_VAR "SOURCE_HAS_QHD_DISPLAY"
-    GET_BUILD_VAR "TARGET_HAS_QHD_DISPLAY"
-    GET_BUILD_VAR "TARGET_HAS_RIO" "false"
-    GET_BUILD_VAR "TARGET_HAS_ROOT" "false"
+    GET_BUILD_VAR "SOURCE_HAS_JDM_CAMERA_APP"
+    GET_BUILD_VAR "TARGET_HAS_JDM_CAMERA_APP"
     GET_BUILD_VAR "SOURCE_HFR_MODE"
     GET_BUILD_VAR "TARGET_HFR_MODE"
     GET_BUILD_VAR "SOURCE_HFR_SUPPORTED_REFRESH_RATE" "none"
     GET_BUILD_VAR "TARGET_HFR_SUPPORTED_REFRESH_RATE" "none"
     GET_BUILD_VAR "SOURCE_HFR_DEFAULT_REFRESH_RATE" "none"
     GET_BUILD_VAR "TARGET_HFR_DEFAULT_REFRESH_RATE" "none"
-    GET_BUILD_VAR "SOURCE_HFR_SEAMLESS_BRT" "none"
-    GET_BUILD_VAR "TARGET_HFR_SEAMLESS_BRT" "none"
-    GET_BUILD_VAR "SOURCE_HFR_SEAMLESS_LUX" "none"
-    GET_BUILD_VAR "TARGET_HFR_SEAMLESS_LUX" "none"
     GET_BUILD_VAR "SOURCE_IS_ESIM_SUPPORTED"
     GET_BUILD_VAR "TARGET_IS_ESIM_SUPPORTED"
-    GET_BUILD_VAR "SOURCE_MDNIE_SUPPORTED_MODES"
-    GET_BUILD_VAR "TARGET_MDNIE_SUPPORTED_MODES"
-    GET_BUILD_VAR "SOURCE_MDNIE_WEAKNESS_SOLUTION_FUNCTION"
-    GET_BUILD_VAR "TARGET_MDNIE_WEAKNESS_SOLUTION_FUNCTION"
-    GET_BUILD_VAR "SOURCE_MDNIE_SUPPORT_HDR_EFFECT" "$(test "$((SOURCE_MDNIE_SUPPORTED_MODES & 4))" != "0" && echo "true" || echo "false")"
-    GET_BUILD_VAR "TARGET_MDNIE_SUPPORT_HDR_EFFECT" "$(test "$((TARGET_MDNIE_SUPPORTED_MODES & 4))" != "0" && echo "true" || echo "false")"
-    GET_BUILD_VAR "SOURCE_MULTI_MIC_MANAGER_VERSION"
-    GET_BUILD_VAR "TARGET_MULTI_MIC_MANAGER_VERSION"
-    GET_BUILD_VAR "SOURCE_SSRM_CONFIG_NAME"
-    GET_BUILD_VAR "TARGET_SSRM_CONFIG_NAME"
-    GET_BUILD_VAR "SOURCE_SUPPORT_CUTOUT_PROTECTION" "false"
-    GET_BUILD_VAR "TARGET_SUPPORT_CUTOUT_PROTECTION" "false"
 } > "$OUT_DIR/config.sh"
 
 exit 0
