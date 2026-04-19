@@ -235,6 +235,8 @@ if $IMG2SDAT; then
 fi
 if $SAMFWDL; then
     SAMFWDL_CMDS=(
+        "git reset --hard"
+        "git apply \"$SRC_DIR/external/patches/samfwdl/0001-write-download-progress-to-stderr.patch\""
         "python3 -m venv \"$TOOLS_DIR/venv\""
         "source \"$TOOLS_DIR/venv/bin/activate\"; pip3 install ."
     )
