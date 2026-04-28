@@ -20,13 +20,10 @@ REGION=$(echo -n "$TARGET_FIRMWARE" | cut -d "/" -f 2)
 if [[ "$SOURCE_PRODUCT_FIRST_API_LEVEL" != "$TARGET_PRODUCT_FIRST_API_LEVEL" ]]; then
     LOG_STEP_IN "- Applying MAINLINE_API_LEVEL patches"
 
-    DECODE_APK "system" "system/framework/esecomm.jar"
     DECODE_APK "system" "system/framework/services.jar"
 
     FTP="
-    system/framework/esecomm.jar/smali/com/sec/esecomm/EsecommAdapter.smali
     system/framework/services.jar/smali/com/android/server/SystemServer.smali
-    system/framework/services.jar/smali/com/android/server/enterprise/hdm/HdmVendorController.smali
     system/framework/services.jar/smali_classes2/com/android/server/power/PowerManagerUtil.smali
     "
     for f in $FTP; do
@@ -87,7 +84,6 @@ if [[ "$SOURCE_AUTO_BRIGHTNESS_TYPE" != "$TARGET_AUTO_BRIGHTNESS_TYPE" ]]; then
     DECODE_APK "system" "system/priv-app/SecSettings/SecSettings.apk"
 
     FTP="
-    system/framework/services.jar/smali_classes3/com/android/server/power/PowerManagerUtil.smali
     system/framework/ssrm.jar/smali/com/android/server/ssrm/PreMonitor.smali
     system/priv-app/SecSettings/SecSettings.apk/smali_classes4/com/samsung/android/settings/Rune.smali
     "
@@ -224,8 +220,8 @@ if [[ "$SOURCE_HFR_MODE" != "$TARGET_HFR_MODE" ]]; then
  #   fi
 
     FTP="
-    system/framework/framework.jar/smali_classes5/com/samsung/android/hardware/display/RefreshRateConfig.smali
-    system/framework/framework.jar/smali_classes5/com/samsung/android/rune/CoreRune.smali
+    system/framework/framework.jar/smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali
+    system/framework/framework.jar/smali_classes6/com/samsung/android/rune/CoreRune.smali
     system/framework/gamemanager.jar/smali/com/samsung/android/game/GameManagerService.smali
     system/framework/gamesdk.jar/smali/com/samsung/android/gamesdk/vrr/GameSDKVrrManager.smali
     system/framework/secinputdev-service.jar/smali/com/samsung/android/hardware/secinputdev/SemInputDeviceManagerService.smali
@@ -247,7 +243,7 @@ if [[ "$SOURCE_HFR_SUPPORTED_REFRESH_RATE" != "$TARGET_HFR_SUPPORTED_REFRESH_RAT
     DECODE_APK "system" "system/priv-app/SecSettings/SecSettings.apk"
 
     FTP="
-    system/framework/framework.jar/smali_classes5/com/samsung/android/hardware/display/RefreshRateConfig.smali
+    system/framework/framework.jar/smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali
     system/priv-app/SecSettings/SecSettings.apk/smali_classes4/com/samsung/android/settings/display/SecDisplayUtils.smali
     "
     for f in $FTP; do
@@ -267,7 +263,7 @@ if [[ "$SOURCE_HFR_DEFAULT_REFRESH_RATE" != "$TARGET_HFR_DEFAULT_REFRESH_RATE" ]
     DECODE_APK "system" "system/priv-app/SettingsProvider/SettingsProvider.apk"
 
     FTP="
-    system/framework/framework.jar/smali_classes5/com/samsung/android/hardware/display/RefreshRateConfig.smali
+    system/framework/framework.jar/smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali
     system/priv-app/SecSettings/SecSettings.apk/smali_classes4/com/samsung/android/settings/display/SecDisplayUtils.smali
     system/priv-app/SettingsProvider/SettingsProvider.apk/smali/com/android/providers/settings/DatabaseHelper.smali
     "
