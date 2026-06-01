@@ -148,9 +148,18 @@ PARSE_FIRMWARE_STRING()
         return 1
     fi
 
-    VERSION="$(cut -d "/" -f 3,4,5 -s <<< "$STRING")"
-    if [ ! "$VERSION" ]; then
-        LOGE "No firmware version value found in \"$STRING\""
+    local THIRD
+    THIRD="$(cut -d "/" -f 3 -s <<< "$STRING")"
+    if [ ! "$THIRD" ]; then
+        LOGE "No IMEI/SN value found in \"$STRING\""
+        return 1
+    elif [[ "${#THIRD}" == "11" ]] && [[ "$THIRD" == "R"* ]]; then
+        SERIAL_NO="$THIRD"
+    elif [[ "${#THIRD}" -ge "8" ]] && [[ "${#THIRD}" -le "15" ]] && [[ "$THIRD" =~ ^[+-]?[0-9]+$ ]]; then
+        # Allow uncomplete IMEIs as samloader can generate them by providing the first 8 numbers (TAC)
+        IMEI="$THIRD"
+    else
+        LOGE "No valid IMEI/SN in \"$STRING\": $THIRD"
         return 1
     fi
 
