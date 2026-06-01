@@ -1,0 +1,53 @@
+name: Update all submodules and create PR
+
+on:
+  workflow_dispatch:   # manual trigger only
+
+jobs:
+  update-all-submodules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update all submodules to latest remote commits
+        id: update
+        run: |
+          # Update every submodule to its default branch tip
+          git submodule update --remote --init
+
+          # Check if any submodule changed
+          if git diff --quiet --cached; then
+            echo "No submodule changes detected."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected in submodules."
+            git commit -m "Update all submodules to latest commits"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.update.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="update-all-submodules-$(date +'%Y%m%d%H%M%S')"
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+          gh pr create \
+            --title "Update all submodules" \
+            --body "Automated update of **all submodules** to their latest remote commits." \
+            --base "${{ github.ref_name }}" \
+            --head "$BRANCH_NAME"
