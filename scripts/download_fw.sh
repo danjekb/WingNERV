@@ -25,7 +25,8 @@ FORCE=false
 FIRMWARES=()
 MODEL=""
 CSC=""
-VERSION=""
+IMEI=""
+SERIAL_NO=""
 LATEST_FIRMWARE=""
 ZIP_FILE=""
 
@@ -126,15 +127,11 @@ PREPARE_SCRIPT "$@"
 for i in "${FIRMWARES[@]}"; do
     PARSE_FIRMWARE_STRING "$i" || exit 1
 
-    LATEST_FIRMWARE="$VERSION"
-    if [ "$LATEST_FIRMWARE" = "LATEST" ]; then
-        LATEST_FIRMWARE="$(GET_LATEST_FIRMWARE "$MODEL" "$CSC")"
-    elif [ ! "$LATEST_FIRMWARE" ]; then
+    LATEST_FIRMWARE="$(GET_LATEST_FIRMWARE "$MODEL" "$CSC")"
+    if [ ! "$LATEST_FIRMWARE" ]; then
         LOGE "Latest available firmware could not be fetched"
         exit 1
     fi
-
-    DOWNLOAD="$LATEST_FIRMWARE"/"$(cut -d "/" -f 1 -s <<< "$LATEST_FIRMWARE")"
 
     LOG_STEP_IN "- Processing $MODEL firmware with $CSC CSC"
     LOG "- Downloaded firmware: $(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" 2> /dev/null)"
@@ -169,7 +166,11 @@ for i in "${FIRMWARES[@]}"; do
     [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ] && rm -rf "$ODIN_DIR/${MODEL}_${CSC}"
     mkdir -p "$ODIN_DIR/${MODEL}_${CSC}"
     # shellcheck disable=SC2164
-    samfwdl download "$MODEL" "$CSC" --firmware "$DOWNLOAD" --force-firmware --resume --decrypt -o "$ODIN_DIR/${MODEL}_${CSC}" 1> /dev/null || exit 1
+    # Anan's samloader stores its logs in the current working directory, let's move into OUT_DIR just for this time
+    (
+    cd "$OUT_DIR"
+    samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download -O "$ODIN_DIR/${MODEL}_${CSC}" 1> /dev/null || exit 1
+    )
 
     ZIP_FILE="$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "*.zip" | sort -r | head -n 1)"
     if [ ! "$ZIP_FILE" ] || [ ! -f "$ZIP_FILE" ]; then
