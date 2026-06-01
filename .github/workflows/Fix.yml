@@ -1,42 +1,36 @@
-name: Remove orphaned submodule gitlink
+name: Add submodule
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:        # Uruchomienie ręczne z poziomu GitHub UI
+  # push:                   # Opcjonalnie: automatycznie przy pushu (odkomentuj)
 
 jobs:
-  remove-gitlink:
+  add-submodule:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout (without submodules)
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: false
-          ref: fifteen
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
-      - name: Remove orphaned submodule (gitlink + directory)
+      - name: Configure Git
         run: |
-          # Remove the gitlink from the index (staged as a submodule)
-          git rm --cached external/samfwdl 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Delete the actual folder if it exists
-          rm -rf external/samfwdl
-
-          # Also remove any leftover .gitmodules entry (just in case)
-          git config -f .gitmodules --remove-section "submodule.external/samfwdl" 2>/dev/null || true
-
-          # Stage the removal of .gitmodules if changed
-          git add .gitmodules 2>/dev/null || true
-
-          # Stage the directory removal (git rm already staged it)
-          # Also stage deletion of empty parent dirs (optional)
-          git add external 2>/dev/null || true
-
-      - name: Commit and push fix
+      - name: Add submodule
         run: |
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-          git commit -m "Remove orphaned submodule gitlink for samfwdl" || echo "No changes to commit"
-          git push origin HEAD:fifteen
+          # Usuń starą ścieżkę jeśli istnieje (opcjonalnie, aby uniknąć konfliktów)
+          rm -rf external/samloader || true
+          git rm --cached external/samloader 2>/dev/null || true
+          # Dodaj submoduł
+          git submodule add --force https://github.com/ananjaser1211/samloader.git external/samloader
+          # Zainicjuj i zaktualizuj
+          git submodule update --init --recursive
+
+      - name: Commit and push changes
+        run: |
+          git add .gitmodules external/samloader
+          git commit -m "Add samloader submodule" || echo "No changes to commit"
+          git push origin HEAD:${GITHUB_REF_NAME}
