@@ -132,7 +132,7 @@ ANDROID_TOOLS=true
 APKTOOL=true
 EROFS_UTILS=true
 IMG2SDAT=true
-SAMFWDL=true
+SAMLOADER=true
 SIGNAPK=true
 
 ANDROID_TOOLS_EXEC=(
@@ -156,10 +156,10 @@ IMG2SDAT_EXEC=(
     "blockimgdiff.py" "common.py" "images.py" "img2sdat" "rangelib.py" "sparse_img.py"
 )
 CHECK_TOOLS "${IMG2SDAT_EXEC[@]}" && IMG2SDAT=false
-SAMFWDL_EXEC=(
-    "../venv/bin/samfwdl"
+SAMLOADER_EXEC=(
+    "../venv/bin/samloader"
 )
-CHECK_TOOLS "${SAMFWDL_EXEC[@]}" && SAMFWDL=false
+CHECK_TOOLS "${SAMLOADER_EXEC[@]}" && SAMLOADER=false
 SIGNAPK_EXEC=(
     "signapk" "signapk.jar"
 )
@@ -170,7 +170,7 @@ if [[ "$1" == "--check-tools" ]]; then
             ! $APKTOOL && \
             ! $EROFS_UTILS && \
             ! $IMG2SDAT && \
-            ! $SAMFWDL && \
+            ! $SAMLOADER && \
             ! $SIGNAPK; then
         exit 0
     else
@@ -233,15 +233,18 @@ if $IMG2SDAT; then
 
     BUILD "img2sdat" "$SRC_DIR/external/img2sdat" "${IMG2SDAT_CMDS[@]}"
 fi
-if $SAMFWDL; then
-    SAMFWDL_CMDS=(
+
+if $SAMLOADER; then
+    SAMLOADER_CMDS=(
         "git reset --hard"
-        "git apply \"$SRC_DIR/external/patches/samfwdl/0001-write-download-progress-to-stderr.patch\""
+        "git apply \"$SRC_DIR/external/patches/samloader/0001-Update-decryption-keys.patch\""
+        "git apply \"$SRC_DIR/external/patches/samloader/0002-Fix-client-request-params.patch\""
+        "git apply \"$SRC_DIR/external/patches/samloader/0003-Add-timeout-to-version.xml-request.patch\""
         "python3 -m venv \"$TOOLS_DIR/venv\""
         "source \"$TOOLS_DIR/venv/bin/activate\"; pip3 install ."
     )
 
-    BUILD "samfwdl" "$SRC_DIR/external/samfwdl" "${SAMFWDL_CMDS[@]}"
+    BUILD "samloader" "$SRC_DIR/external/samloader" "${SAMLOADER_CMDS[@]}"
 fi
 if $SIGNAPK; then
     SIGNAPK_CMDS=(
