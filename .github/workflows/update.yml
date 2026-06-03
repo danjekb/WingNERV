@@ -22,52 +22,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Add missing submodules (defined in .gitmodules but not yet present)
-        run: |
-          if [ ! -f .gitmodules ]; then
-            echo "No .gitmodules file – nothing to add."
-            exit 0
-          fi
-
-          # Loop through all submodule paths defined in .gitmodules
-          git config -f .gitmodules --name-only --get-regexp 'submodule\..*\.path' | while read key; do
-            submodule_path=$(git config -f .gitmodules --get "$key")
-            submodule_name=$(echo "$key" | sed 's/\.path$//')
-            submodule_url=$(git config -f .gitmodules --get "$submodule_name.url")
-
-            if [ -z "$submodule_url" ]; then
-              echo "⚠️ Submodule '$submodule_path' has no URL – skipping."
-              continue
-            fi
-
-            # Check if submodule is already initialized/registered
-            if ! git submodule status "$submodule_path" &>/dev/null; then
-              echo "➕ Adding missing submodule: $submodule_path ($submodule_url)"
-              # Remove directory if it exists as a regular folder (avoid conflict)
-              rm -rf "$submodule_path"
-              git submodule add --force "$submodule_url" "$submodule_path"
-            else
-              echo "✅ Submodule '$submodule_path' already present."
-            fi
-          done
-
-          # Stage any changes (.gitmodules and new submodule references)
-          git add .gitmodules
-          git add .
-
       - name: Update all submodules to latest remote commits
         id: update
         run: |
-          # Initialize and fetch all submodules (including newly added ones)
           git submodule update --init --remote --recursive
 
-          # Check if any change (submodule refs or .gitmodules) is pending
           if git diff --cached --quiet && git diff --quiet; then
             echo "No changes detected."
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             git add .
-            git commit -m "Add missing submodules from .gitmodules and update all to latest commits"
+            git commit -m "Update all submodules to latest commits"
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
@@ -81,6 +46,6 @@ jobs:
           git push origin "$BRANCH_NAME"
           gh pr create \
             --title "Update all submodules" \
-            --body "Automated update: added any submodules defined in .gitmodules that were missing, and updated all submodules to their latest remote commits." \
+            --body "Automated update: all submodules updated to their latest remote commits." \
             --base "${{ github.ref_name }}" \
             --head "$BRANCH_NAME"
