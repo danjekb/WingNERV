@@ -16,18 +16,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# [
 source "$SRC_DIR/scripts/utils/firmware_utils.sh" || exit 1
 source "$TOOLS_DIR/venv/bin/activate" || exit 1
 
 FORCE=false
+SPECIFIC_VERSION=""
 
 FIRMWARES=()
 MODEL=""
 CSC=""
 IMEI=""
 SERIAL_NO=""
-LATEST_FIRMWARE=""
+TARGET_VERSION=""
 ZIP_FILE=""
 
 PREPARE_SCRIPT()
@@ -39,6 +39,9 @@ PREPARE_SCRIPT()
     while [ "$#" != 0 ]; do
         if [[ "$1" == "--force" ]] || [[ "$1" == "-f" ]]; then
             FORCE=true
+        elif [[ "$1" == "--version" ]] || [[ "$1" == "-v" ]]; then
+            SPECIFIC_VERSION="$2"
+            shift
         elif [[ "$1" == "--ignore-source" ]]; then
             IGNORE_SOURCE=true
         elif [[ "$1" == "--ignore-target" ]]; then
@@ -80,9 +83,10 @@ PREPARE_SCRIPT()
 PRINT_USAGE()
 {
     echo "Usage: download_fw [options] <firmware>" >&2
-    echo " --ignore-source : Skip parsing source firmware flags" >&2
-    echo " --ignore-target : Skip parsing target firmware flags" >&2
-    echo " -f, --force : Force firmware download" >&2
+    echo " --ignore-source   : Skip parsing source firmware flags" >&2
+    echo " --ignore-target   : Skip parsing target firmware flags" >&2
+    echo " -f, --force       : Force firmware download" >&2
+    echo " -v, --version <v> : Download a specific firmware version" >&2
 }
 
 VERIFY_ODIN_PACKAGES()
@@ -98,11 +102,10 @@ VERIFY_ODIN_PACKAGES()
 
         FILE_NAME="${FILE_NAME%.md5}"
 
-        # Samsung stores the output of `md5sum` at the very end of the file
-        LENGTH="32" # Length of MD5 hash
-        LENGTH="$((LENGTH + 2))" # 2 whitespace chars
-        LENGTH="$((LENGTH + ${#FILE_NAME}))" # File name without .md5 extension
-        LENGTH="$((LENGTH + 1))" # 1 newline char
+        LENGTH="32" 
+        LENGTH="$((LENGTH + 2))" 
+        LENGTH="$((LENGTH + ${#FILE_NAME}))" 
+        LENGTH="$((LENGTH + 1))" 
 
         STORED_HASH="$(tail -c "$LENGTH" "$f" | cut -d " " -f 1 -s)"
         if [ ! "$STORED_HASH" ] || [[ "${#STORED_HASH}" != "32" ]]; then
@@ -120,56 +123,55 @@ VERIFY_ODIN_PACKAGES()
         LOG_STEP_OUT
     done < <(find "$ODIN_DIR/${MODEL}_${CSC}" -type f -name "*.md5")
 }
-# ]
 
 PREPARE_SCRIPT "$@"
 
 for i in "${FIRMWARES[@]}"; do
     PARSE_FIRMWARE_STRING "$i" || exit 1
 
-    LATEST_FIRMWARE="$(GET_LATEST_FIRMWARE "$MODEL" "$CSC")"
-    if [ ! "$LATEST_FIRMWARE" ]; then
-        LOGE "Latest available firmware could not be fetched"
+    if [ -n "$SPECIFIC_VERSION" ]; then
+        TARGET_VERSION="$SPECIFIC_VERSION"
+    else
+        TARGET_VERSION="$(GET_LATEST_FIRMWARE "$MODEL" "$CSC")"
+    fi
+
+    if [ ! "$TARGET_VERSION" ]; then
+        LOGE "Target firmware version could not be determined"
         exit 1
     fi
 
     LOG_STEP_IN "- Processing $MODEL firmware with $CSC CSC"
     LOG "- Downloaded firmware: $(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" 2> /dev/null)"
     LOG "- Extracted firmware: $(cat "$FW_DIR/${MODEL}_${CSC}/.extracted" 2> /dev/null)"
-    LOG "- Latest available firmware: $LATEST_FIRMWARE"
+    LOG "- Target firmware version: $TARGET_VERSION"
 
     LOG_STEP_IN
 
     if ! $FORCE; then
-        # Skip if firmware has been extracted and equal/newer than the one in FUS
         if [ -f "$FW_DIR/${MODEL}_${CSC}/.extracted" ]; then
-            if COMPARE_SEC_BUILD_VERSION "$(cat "$FW_DIR/${MODEL}_${CSC}/.extracted")" "$LATEST_FIRMWARE"; then
+            if COMPARE_SEC_BUILD_VERSION "$(cat "$FW_DIR/${MODEL}_${CSC}/.extracted")" "$TARGET_VERSION"; then
                 LOG "\033[0;33m! This firmware has already been extracted, skipping\033[0m"
                 LOG_STEP_OUT; LOG_STEP_OUT
                 continue
             fi
         fi
 
-        # Skip if firmware has already been downloaded
         if [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ]; then
-            if ! COMPARE_SEC_BUILD_VERSION "$(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded")" "$LATEST_FIRMWARE"; then
-                LOG "\033[0;33m! A newer firmware is available for download, use --force flag if you want to overwrite it\033[0m"
-            else
-                LOG "\033[0;33m! This firmware has already been downloaded\033[0m"
+            if [ "$(cat "$ODIN_DIR/${MODEL}_${CSC}/.downloaded")" == "$TARGET_VERSION" ]; then
+                LOG "\033[0;33m! This specific firmware version has already been downloaded\033[0m"
+                LOG_STEP_OUT; LOG_STEP_OUT
+                continue
             fi
-            LOG_STEP_OUT; LOG_STEP_OUT
-            continue
         fi
     fi
 
     LOG "- Downloading firmware..."
     [ -f "$ODIN_DIR/${MODEL}_${CSC}/.downloaded" ] && rm -rf "$ODIN_DIR/${MODEL}_${CSC}"
     mkdir -p "$ODIN_DIR/${MODEL}_${CSC}"
-    # shellcheck disable=SC2164
-    # Anan's samloader stores its logs in the current working directory, let's move into OUT_DIR just for this time
+    
     (
     cd "$OUT_DIR"
-    samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download -O "$ODIN_DIR/${MODEL}_${CSC}" 1> /dev/null || exit 1
+    samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download -v "$TARGET_VERSION" -O "$ODIN_DIR/${MODEL}_${CSC}" 1> /dev/null || exit 1
     )
 
     ZIP_FILE="$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "*.zip" | sort -r | head -n 1)"
@@ -179,15 +181,14 @@ for i in "${FIRMWARES[@]}"; do
     fi
 
     LOG "- Extracting $(basename "$ZIP_FILE")..."
-    EVAL "unzip -o \"$ZIP_FILE\" -d \"$ODIN_DIR/${MODEL}_${CSC}\" && rm -rf \"$ZIP_FILE\"" || exit 1
+    eval "unzip -o \"$ZIP_FILE\" -d \"$ODIN_DIR/${MODEL}_${CSC}\" && rm -rf \"$ZIP_FILE\"" || exit 1
 
     VERIFY_ODIN_PACKAGES
 
-    echo -n "$LATEST_FIRMWARE" > "$ODIN_DIR/${MODEL}_${CSC}/.downloaded"
+    echo -n "$TARGET_VERSION" > "$ODIN_DIR/${MODEL}_${CSC}/.downloaded"
 
     LOG_STEP_OUT; LOG_STEP_OUT
 done
 
 deactivate
-
 exit 0
